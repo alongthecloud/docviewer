@@ -21,7 +21,6 @@ class InfoFile {
 
   String getkey() {
     return _key;
-    // return "$folder:$filename";
   }
 
   void _updateKey() {
@@ -30,7 +29,7 @@ class InfoFile {
 
   InfoFile.fromJson(Map<String, dynamic> json)
       : folder = json['folder'],
-        filename = json['filename'],
+        filename = json['name'],
         title = json['title'],
         desc = json['desc'],
         datetimeString = json['datetime'] {
@@ -47,15 +46,15 @@ class InfoFile {
 
   Map<String, dynamic> toJson() => {
         'folder': folder,
-        'filename': filename,
+        'name': filename,
         'title': title,
         'desc': desc,
-        'created': datetimeString,
+        'datetime': datetimeString,
       };
 
   static String makeTimeString(DateTime time) {
-    var timeString = sprintf("%i-%02i-%02i %02i:%02i",
-        [time.year, time.month, time.day, time.hour, time.minute]);
+    var timeString = sprintf("%i-%02i-%02i %02i:%02i:%02i",
+        [time.year, time.month, time.day, time.hour, time.minute, time.second]);
     return timeString;
   }
 }
@@ -67,11 +66,11 @@ class InfoFolder {
   InfoFolder(this.path, this.title);
 
   InfoFolder.fromJson(Map<String, dynamic> json)
-      : path = json['path'],
+      : path = json['name'],
         title = json['title'];
 
   Map<String, dynamic> toJson() => {
-        'path': path,
+        'name': path,
         'title': title,
       };
 }

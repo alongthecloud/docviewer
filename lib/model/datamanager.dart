@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
+
 import 'information.dart';
 import 'package:path/path.dart' as path;
 
@@ -97,6 +99,7 @@ class DataManager {
     var foldersobj = jsonobj['folders'];
     for (var obj in foldersobj) {
       var folder = InfoFolder.fromJson(obj);
+      if (folder.path == null) continue;
       var folderBasename = path.basenameWithoutExtension(folder.path);
 
       folders.putIfAbsent(folderBasename, () => folder);
@@ -136,7 +139,15 @@ class DataManager {
 
     var f = File(filename);
     f.createSync();
-    f.writeAsStringSync(jsonEncode(root));
+    String jsonText;
+    if (kDebugMode) {
+      JsonEncoder encoder = JsonEncoder.withIndent('  ');
+      jsonText = encoder.convert(root);
+    } else {
+      jsonText = jsonEncode(root);
+    }
+
+    f.writeAsStringSync(jsonText);
 
     print(
         "$filename saved (folder:${folderTable.length}, files:${fileTable.length}");

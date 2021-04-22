@@ -16,7 +16,8 @@ enum SortType {
 }
 
 class DocumentModel extends ChangeNotifier {
-  final String descfilename = "_description.json";
+  final String descfilename = "_docviewer_info.json";
+  final String icondirname = "_icons";
   final String subdirname = "docviewer";
 
   Directory targetPath;
@@ -32,7 +33,6 @@ class DocumentModel extends ChangeNotifier {
   int sortOrder = 1;
 
   DocumentModel() {
-    // greenDot = Image.asset("assets/icons/greendot.png");
     updateInfo(false);
   }
 
@@ -77,7 +77,7 @@ class DocumentModel extends ChangeNotifier {
       writeJsonToFile(descfilepath);
     }
 
-    final iconpath = path.join(targetPath.path, '_icons');
+    final iconpath = path.join(targetPath.path, icondirname);
     icons.clear();
 
     // 폴더 아이콘 로드

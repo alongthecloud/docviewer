@@ -6,9 +6,6 @@ import 'documentview.dart';
 import 'myhomepage.dart';
 
 void main() {
-  // Future<Directory> appDocDir = getApplicationDocumentsDirectory();
-  // appDocDir.then((value) => {stdout.writeln(value.path)});
-
   runApp(new MyApp());
 }
 

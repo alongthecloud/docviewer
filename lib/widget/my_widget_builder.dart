@@ -19,7 +19,7 @@ class MyListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double contextRateWidth = MediaQuery.of(context).size.width - 192;
+    final double contextRateWidth = MediaQuery.of(context).size.width - 212;
     return InkWell(
       onTap: () {
         if (onTap != null) onTap();
@@ -31,7 +31,7 @@ class MyListTile extends StatelessWidget {
                 padding: EdgeInsets.all(2),
                 width: 42,
                 height: 42,
-                child: ClipOval(
+                child: ClipRRect(
                   child: header,
                 )),
             Container(
