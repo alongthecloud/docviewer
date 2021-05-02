@@ -102,13 +102,17 @@ class _MyHomePageState extends State<MyHomePage> {
     appendWidget.add(ListTile(
       leading: const Icon(Icons.settings),
       title: Text('Settings'),
-      onTap: () {},
+      onTap: () {
+        Navigator.pushNamed(context, '/settings');
+      },
     ));
 
     appendWidget.add(ListTile(
       leading: const Icon(Icons.info),
       title: Text('About'),
-      onTap: () {},
+      onTap: () {
+        Navigator.pushNamed(context, '/about');
+      },
     ));
 
     return ListView(children: [

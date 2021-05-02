@@ -18,7 +18,7 @@ enum SortType {
 class DocumentModel extends ChangeNotifier {
   final String descfilename = "_docviewer_info.json";
   final String icondirname = "_icons";
-  final String subdirname = "docviewer";
+  final String subdirname = "docviewer2/mail";
 
   Directory targetPath;
 

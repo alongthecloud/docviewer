@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import 'model/documentmodel.dart';
 import 'documentview.dart';
 import 'myhomepage.dart';
+import 'aboutview.dart';
+import 'settingsview.dart';
 
 void main() {
   runApp(new MyApp());
@@ -23,7 +25,9 @@ class MyApp extends StatelessWidget {
             onGenerateRoute: (settings) {
               var routes = <String, WidgetBuilder>{
                 '/': (context) => MyHomePage(),
-                '/viewer': (context) => DocumentView()
+                '/viewer': (context) => DocumentView(),
+                '/settings': (context) => SettingsView(),
+                '/about': (context) => AboutView(),
               };
 
               WidgetBuilder builder = routes[settings.name];
