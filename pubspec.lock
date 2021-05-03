@@ -146,6 +146,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.6.1"
+  flutter_settings:
+    dependency: "direct main"
+    description:
+      name: flutter_settings
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.2"
   flutter_svg:
     dependency: transitive
     description:
@@ -373,13 +380,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.25.0"
-  settings_ui:
-    dependency: "direct main"
-    description:
-      name: settings_ui
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.0"
   shared_preferences:
     dependency: "direct main"
     description:
@@ -497,6 +497,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.19"
+  toast:
+    dependency: transitive
+    description:
+      name: toast
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.5"
   typed_data:
     dependency: transitive
     description:
