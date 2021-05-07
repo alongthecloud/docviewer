@@ -42,12 +42,6 @@ class _DocumentViewState extends State<DocumentView> {
                 child: HtmlWidget(
               _getHtmlText(),
               baseUrl: Uri.file(_targetPath),
-              customWidgetBuilder: (element) {
-                if (element.localName == 'title') {
-                  return SizedBox(height: 5);
-                }
-                return null;
-              },
             ))));
   }
 

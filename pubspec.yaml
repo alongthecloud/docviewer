@@ -53,11 +53,10 @@ dev_dependencies:
 flutter:
   assets:
     - assets/
-    - assets/icons/
     - assets/fonts/
     
   fonts:
-    - family: Nanum
+    - family: NanumGothic
       fonts:
         - asset: assets/fonts/NanumGothic.ttf
 

@@ -7,6 +7,7 @@ import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import 'appconfigmodel.dart';
 import 'information.dart';
 import 'datamanager.dart';
 
@@ -18,7 +19,7 @@ enum SortType {
 class DocumentModel extends ChangeNotifier {
   final String descfilename = "_docviewer_info.json";
   final String icondirname = "_icons";
-  final String subdirname = "docviewer2/mail";
+  // final String subdirname = "docviewer2/mail";
 
   Directory targetPath;
 
@@ -32,7 +33,9 @@ class DocumentModel extends ChangeNotifier {
   SortType sortType = SortType.Date;
   int sortOrder = 1;
 
-  DocumentModel() {
+  final AppConfigModel appconfigmodel;
+
+  DocumentModel(@required this.appconfigmodel) {
     updateInfo(false);
   }
 
@@ -45,20 +48,27 @@ class DocumentModel extends ChangeNotifier {
   }
 
   Future<Directory> _getTargetPath() async {
+    Directory targetDirectory;
+    String subdirname = appconfigmodel.targetPath;
+
     if (Platform.isAndroid) {
       bool isgranted = await Permission.storage.request().isGranted;
       if (isgranted) {
         final extdocdirpath =
             await ExtStorage.getExternalStoragePublicDirectory(
                 ExtStorage.DIRECTORY_DOCUMENTS);
-        return Directory('$extdocdirpath/$subdirname').create(recursive: true);
+
+        targetDirectory = Directory('$extdocdirpath/$subdirname');
       }
     } else if (Platform.isWindows) {
       final appdocdir = await getApplicationDocumentsDirectory();
-      return Directory('${appdocdir.path}/$subdirname').create(recursive: true);
+      targetDirectory = Directory('${appdocdir.path}/$subdirname');
     }
 
-    return null;
+    if (!targetDirectory.existsSync())
+      return null;
+    else
+      return targetDirectory;
   }
 
   void updateInfo(bool forceUpdate) async {
