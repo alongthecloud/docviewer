@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
+import 'package:simple_logger/simple_logger.dart';
 
 import 'information.dart';
 import 'package:path/path.dart' as path;
@@ -149,7 +150,8 @@ class DataManager {
 
     f.writeAsStringSync(jsonText);
 
-    print(
+    var logger = SimpleLogger();
+    logger.info(
         "$filename saved (folder:${folderTable.length}, files:${fileTable.length}");
 
     return true;

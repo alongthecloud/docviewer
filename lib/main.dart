@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:simple_logger/simple_logger.dart';
 
 import 'model/documentmodel.dart';
 import 'model/appconfigmodel.dart';
@@ -10,6 +12,11 @@ import 'aboutview.dart';
 import 'settingsview.dart';
 
 void main() {
+  final logger = SimpleLogger();
+  if (kReleaseMode) {
+    logger.setLevel(Level.OFF);
+  }
+
   runApp(ChangeNotifierProvider<AppConfigModel>(
       create: (_) {
         return AppConfigModel();

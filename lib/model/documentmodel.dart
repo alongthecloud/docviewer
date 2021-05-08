@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:simple_logger/simple_logger.dart';
 
 import 'appconfigmodel.dart';
 import 'information.dart';
@@ -69,10 +70,12 @@ class DocumentModel extends ChangeNotifier {
   }
 
   void updateInfo(bool rebuild) async {
+    var logger = SimpleLogger();
+
     targetPath = await _getTargetPath();
     if (targetPath == null) return;
 
-    debugPrint("TargetPath : $targetPath");
+    logger.info("TargetPath : $targetPath");
 
     var descfilepath = path.join(targetPath.path, descfilename);
 
@@ -113,8 +116,10 @@ class DocumentModel extends ChangeNotifier {
   }
 
   void loadJsonFromFile(filename) {
+    var logger = SimpleLogger();
+
     bool result = _dataManager.loadJsonFromFile(filename);
-    debugPrint("$filename loaded : $result");
+    logger.info("$filename loaded : $result");
   }
 
   void writeJsonToFile(filename) {
@@ -187,8 +192,9 @@ class DocumentModel extends ChangeNotifier {
   }
 
   void updateModel() {
+    var logger = SimpleLogger();
     notifyListeners();
-    debugPrint("update and notify");
+    logger.info("update and notify");
   }
 
   bool isLock() {
