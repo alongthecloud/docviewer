@@ -19,7 +19,6 @@ enum SortType {
 class DocumentModel extends ChangeNotifier {
   final String descfilename = "_docviewer_info.json";
   final String icondirname = "_icons";
-  // final String subdirname = "docviewer2/mail";
 
   Directory targetPath;
 
@@ -35,9 +34,7 @@ class DocumentModel extends ChangeNotifier {
 
   final AppConfigModel appconfigmodel;
 
-  DocumentModel(@required this.appconfigmodel) {
-    updateInfo(false);
-  }
+  DocumentModel(this.appconfigmodel);
 
   Map<String, InfoFolder> getFolders() {
     return _dataManager.folders;
@@ -71,7 +68,7 @@ class DocumentModel extends ChangeNotifier {
       return targetDirectory;
   }
 
-  void updateInfo(bool forceUpdate) async {
+  void updateInfo(bool rebuild) async {
     targetPath = await _getTargetPath();
     if (targetPath == null) return;
 
@@ -80,7 +77,7 @@ class DocumentModel extends ChangeNotifier {
     var descfilepath = path.join(targetPath.path, descfilename);
 
     final descfile = File(descfilepath);
-    if (descfile.existsSync() && forceUpdate == false) {
+    if (descfile.existsSync() && rebuild == false) {
       loadJsonFromFile(descfilepath);
     } else {
       updateDirectory(targetPath);
@@ -94,7 +91,7 @@ class DocumentModel extends ChangeNotifier {
     var folders = _dataManager.folders;
     for (var folderkey in folders.keys) {
       icons.putIfAbsent(folderkey, () {
-        var imagepath = path.join(iconpath, "$folderkey.png");
+        var imagepath = path.join(iconpath, "$folderkey.jpg");
         Image image = loadImageFromPath(imagepath);
         return image;
       });

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import 'model/documentmodel.dart';
 import 'model/appconfigmodel.dart';
+import 'initview.dart';
 import 'documentview.dart';
 import 'myhomepage.dart';
 import 'aboutview.dart';
@@ -35,10 +36,11 @@ class MyApp extends StatelessWidget {
       return MaterialApp(
           theme: apptheme,
           title: 'Txt viewer',
-          initialRoute: '/',
+          initialRoute: '/init',
           onGenerateRoute: (settings) {
             var routes = <String, WidgetBuilder>{
               '/': (context) => MyHomePage(),
+              '/init': (context) => InitView(),
               '/viewer': (context) => DocumentView(),
               '/settings': (context) => SettingsView(),
               '/about': (context) => AboutView(),

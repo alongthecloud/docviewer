@@ -4,12 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/foundation.dart';
 
-import 'model/appconfigmodel.dart';
 import 'model/documentmodel.dart';
 import 'model/information.dart';
 import 'widget/expandable_group_widget.dart';
 import 'widget/my_list_tile.dart';
-import 'widget/my_dialogs.dart';
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -24,26 +22,6 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     // _treeViewController = ExpandedTileController();
-
-    var appconfigmodel = Provider.of<AppConfigModel>(context, listen: false);
-    if (appconfigmodel.targetPath == null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        var dialog = MyInputDialog(
-            touchDismissible: false,
-            backDismissible: true,
-            titleText: 'Input document path',
-            descText:
-                "setup the reference path to read the document. Please enter a folder located under the Documents folder. Default value is '${AppConfigModel.DEFAULT_DOCUMENT_PATH}'.",
-            hintText: AppConfigModel.DEFAULT_DOCUMENT_PATH,
-            onConfirm: (String text) {
-              if (text == null || text.isEmpty)
-                text = AppConfigModel.DEFAULT_DOCUMENT_PATH;
-              appconfigmodel.targetPath = text;
-            });
-
-        return dialog.show(context);
-      });
-    }
   }
 
   @override
@@ -85,23 +63,24 @@ class _MyHomePageState extends State<MyHomePage> {
     List<Widget> appendWidget = [];
     appendWidget.add(ListTile(
       leading: const Icon(Icons.refresh),
-      title: Text('Update'),
-      subtitle: Text('update file information'),
+      title: Text('Rebuild'),
+      subtitle: Text('rebuild file information'),
       onTap: model.isLock()
           ? null
           : () {
               // set up the AlertDialog
               AlertDialog alert = AlertDialog(
-                content: Text("Would you like to update file informations?"),
+                content: Text("Would you like to rebuild file informations?"),
                 actions: [
                   TextButton(
-                    child: Text("Cancel"),
+                    child: Text("No"),
                     onPressed: () {
+                      model.updateInfo(false);
                       Navigator.pop(context);
                     },
                   ),
                   TextButton(
-                    child: Text("Ok"),
+                    child: Text("Yes"),
                     onPressed: () {
                       Navigator.pop(context);
                       Navigator.pop(context);
@@ -189,11 +168,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    var appconfigmodel = Provider.of<AppConfigModel>(context, listen: false);
-    if (appconfigmodel.targetPath == null) {
-      return Scaffold(key: scaffoldKey, body: Center(child: Text('Waiting')));
-    }
-
+    // var appconfigmodel = Provider.of<AppConfigModel>(context, listen: false);
     return Consumer<DocumentModel>(
       builder: (context, model, child) {
         var orderArrow = model.sortOrder < 0 ? '↑' : '↓';

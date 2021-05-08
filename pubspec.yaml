@@ -36,7 +36,7 @@ dependencies:
   sprintf: ^6.0.0
   shared_preferences: ^2.0.5  
   flutter_settings: ^1.0.2
-
+  
   # only android
   permission_handler:
   ext_storage: ^1.0.3
