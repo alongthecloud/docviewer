@@ -40,10 +40,14 @@ dependencies:
   sprintf: ^6.0.0
   shared_preferences: ^2.0.5  
   flutter_settings: ^1.0.2
+  new_gradient_app_bar: ^0.2.0
   
   #dev
   simple_logger: ^1.8.0+1
   
+  # for mobile
+  flutter_webview_plugin: ^0.3.11
+
   # only android
   permission_handler:
   ext_storage: ^1.0.3
