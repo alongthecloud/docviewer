@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/foundation.dart';
+import 'package:simple_logger/simple_logger.dart';
 
 import 'model/documentmodel.dart';
 import 'model/information.dart';
@@ -44,10 +45,7 @@ class _MyHomePageState extends State<MyHomePage> {
           model.icons.containsKey(info.path) ? model.icons[info.path] : null;
       groupWidget.add(ListTile(
           leading: Container(
-              margin: EdgeInsets.all(2),
-              width: 30,
-              height: 30,
-              child: ClipOval(child: leadicon)),
+              width: 32, height: 32, child: ClipOval(child: leadicon)),
           title: Text(info.title),
           onTap: () {
             model.updateFilterList([info.path]);
@@ -136,9 +134,10 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget _fileListView(context, DocumentModel model) {
+    var logger = SimpleLogger();
+
     var folderinfos = model.getFolders();
     var fileinfos = model.getFiles();
-
     var listfiles = model.filteredfiles;
 
     return ListView.builder(
@@ -151,17 +150,22 @@ class _MyHomePageState extends State<MyHomePage> {
             ? folderinfos[current.folder].title
             : current.folder;
 
-        return MyListTile(
-          current.title,
-          foldername,
-          header: model.icons[current.folder],
-          tag: current.datetimeString,
-          desc: current.desc,
-          onTap: () {
-            model.selectedKey = filekey;
-            Navigator.pushNamed(context, '/viewer');
-          },
-        );
+        return MyListTile(current.title, foldername,
+            header: model.icons[current.folder],
+            time: current.datetimeString,
+            desc: current.desc,
+            tags: '', onTap: () {
+          model.selectedKey = filekey;
+          Navigator.pushNamed(context, '/viewer');
+        }, onLongPress: () {
+          logger.info("tile LongPress");
+          // if (current.tags.contains(1)) {
+          //   current.tags.remove(1);
+          // } else {
+          //   current.tags.add(1);
+          // }
+          // setState(() {});
+        });
       },
     );
   }

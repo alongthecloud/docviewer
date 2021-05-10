@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:simple_logger/simple_logger.dart';
 
 // ignore: must_be_immutable
 class MyListTile extends StatelessWidget {
@@ -6,23 +7,38 @@ class MyListTile extends StatelessWidget {
 
   String parent;
   String title;
-  String tag;
+  String time;
   String desc;
+  String tags;
   Function onTap;
+  Function onLongPress;
 
-  MyListTile(title, parent, {this.header, this.tag, this.desc, this.onTap}) {
+  MyListTile(title, parent,
+      {this.header,
+      this.time,
+      this.desc,
+      this.tags,
+      this.onTap,
+      this.onLongPress}) {
     this.title = title;
     this.parent = parent;
-    if (this.tag == null) this.tag = "";
-    if (this.desc == null) this.desc = "";
+
+    const String EMPTY = "";
+
+    this.time = (this.time ?? EMPTY);
+    this.tags = (this.tags ?? EMPTY);
+    this.desc = (this.desc ?? EMPTY);
   }
 
   @override
   Widget build(BuildContext context) {
-    final double contextRateWidth = MediaQuery.of(context).size.width - 212;
+    var logger = SimpleLogger();
     return InkWell(
       onTap: () {
-        if (onTap != null) onTap();
+        onTap?.call();
+      },
+      onLongPress: () {
+        onLongPress?.call();
       },
       child: Container(
           padding: EdgeInsets.fromLTRB(9.0, 3.0, 6.0, 3.0),
@@ -34,41 +50,49 @@ class MyListTile extends StatelessWidget {
                 child: ClipOval(
                   child: header,
                 )),
-            Container(
-                padding: EdgeInsets.fromLTRB(9.0, 3.0, 6.0, 3.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Row(
+            Expanded(
+                child: Container(
+                    padding: EdgeInsets.fromLTRB(6.0, 3.0, 9.0, 3.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
+                      children: <Widget>[
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                                child: Text(parent,
+                                    style: TextStyle(fontSize: 13.0))),
+                            SizedBox(
+                                child: Text(time,
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                        fontSize: 12.0,
+                                        fontWeight: FontWeight.normal,
+                                        color: Colors.grey[600]))),
+                          ],
+                        ),
                         Container(
-                            width: contextRateWidth,
-                            child:
-                                Text(parent, style: TextStyle(fontSize: 13.0))),
-                        Container(
-                            child: Text(tag,
+                            padding: EdgeInsets.only(right: 16.0),
+                            child: Text(title,
+                                maxLines: 1,
                                 style: TextStyle(
-                                    fontSize: 12.0,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.grey[600]))),
+                                    fontSize: 14.0,
+                                    fontWeight: FontWeight.bold),
+                                overflow: TextOverflow.clip)),
+                        Container(
+                            child: Text(desc,
+                                maxLines: 1,
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.normal),
+                                overflow: TextOverflow.clip))
                       ],
-                    ),
-                    Container(
-                        padding: new EdgeInsets.only(right: 16.0),
-                        child: Text(title,
-                            style: TextStyle(
-                                fontSize: 14.0, fontWeight: FontWeight.bold),
-                            overflow: TextOverflow.fade)),
-                    Container(
-                        child: Text(desc,
-                            maxLines: 1,
-                            style: TextStyle(
-                                fontSize: 12, fontWeight: FontWeight.w200),
-                            overflow: TextOverflow.fade))
-                  ],
-                )),
+                    ))),
+            Container(
+                width: 10,
+                child: Text(tags,
+                    textAlign: TextAlign.right, style: TextStyle(fontSize: 10)))
           ])),
     );
   }
