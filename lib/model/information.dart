@@ -1,6 +1,15 @@
 import 'package:sprintf/sprintf.dart';
 
-class InfoFile {
+abstract class InfoBase {
+  String getkey();
+
+  InfoBase();
+  InfoBase.fromJson(Map<String, dynamic> json);
+
+  Map<String, dynamic> toJson();
+}
+
+class InfoFile implements InfoBase {
   String folder;
 
   String filename;
@@ -19,14 +28,11 @@ class InfoFile {
     _updateKey();
   }
 
-  String getkey() {
-    return _key;
-  }
-
   void _updateKey() {
-    _key = "$folder:$filename";
+    _key = "$folder::$filename";
   }
 
+  @override
   InfoFile.fromJson(Map<String, dynamic> json)
       : folder = json['folder'],
         filename = json['name'],
@@ -44,6 +50,7 @@ class InfoFile {
     _updateKey();
   }
 
+  @override
   Map<String, dynamic> toJson() => {
         'folder': folder,
         'name': filename,
@@ -57,20 +64,50 @@ class InfoFile {
         [time.year, time.month, time.day, time.hour, time.minute, time.second]);
     return timeString;
   }
+
+  @override
+  String getkey() {
+    return _key;
+  }
 }
 
-class InfoFolder {
+class InfoFolder implements InfoBase {
   String path;
   String title;
 
   InfoFolder(this.path, this.title);
 
+  @override
+  String getkey() {
+    return path;
+  }
+
+  @override
   InfoFolder.fromJson(Map<String, dynamic> json)
       : path = json['name'],
         title = json['title'];
 
+  @override
   Map<String, dynamic> toJson() => {
         'name': path,
         'title': title,
       };
+}
+
+class InfoTags extends InfoBase {
+  int bookmark;
+
+  InfoTags(this.bookmark);
+
+  @override
+  String getkey() {
+    return 'tags';
+  }
+
+  @override
+  InfoTags.fromJson(Map<String, dynamic> json)
+      : bookmark = json['bookmark'] ?? 0;
+
+  @override
+  Map<String, dynamic> toJson() => {'bookmark': bookmark};
 }

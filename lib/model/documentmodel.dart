@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:ext_storage/ext_storage.dart';
@@ -7,6 +8,7 @@ import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:simple_logger/simple_logger.dart';
+import 'package:synchronized_lite/synchronized_lite.dart';
 
 import 'appconfigmodel.dart';
 import 'information.dart';
@@ -18,10 +20,18 @@ enum SortType {
 }
 
 class DocumentModel extends ChangeNotifier {
-  final String descfilename = "_docviewer_info.json";
+  final _lockInfofileSave = Lock();
+  final _lockDescfileSave = Lock();
+
+  Timer _timerDescFileSave;
+
+  final String infofilename = "_docviewer_info.json";
+  final String descfilename = "_docviewer_desc.json";
   final String icondirname = "_icons";
 
   Directory targetPath;
+  String _infofilepath;
+  String _descfilepath;
 
   DataManager _dataManager = DataManager();
   Map<String, Image> icons = {};
@@ -43,6 +53,10 @@ class DocumentModel extends ChangeNotifier {
 
   Map<String, InfoFile> getFiles() {
     return _dataManager.files;
+  }
+
+  Map<String, InfoTags> getTags() {
+    return _dataManager.desces;
   }
 
   Future<Directory> _getTargetPath() async {
@@ -77,14 +91,20 @@ class DocumentModel extends ChangeNotifier {
 
     logger.info("TargetPath : $targetPath");
 
-    var descfilepath = path.join(targetPath.path, descfilename);
+    _infofilepath = path.join(targetPath.path, infofilename);
+    _descfilepath = path.join(targetPath.path, descfilename);
 
-    final descfile = File(descfilepath);
-    if (descfile.existsSync() && rebuild == false) {
-      loadJsonFromFile(descfilepath);
+    final infofile = File(_infofilepath);
+    if (infofile.existsSync() && rebuild == false) {
+      loadInfoJsonFromFile();
     } else {
       updateDirectory(targetPath);
-      writeJsonToFile(descfilepath);
+      writeInfoJsonToFile();
+    }
+
+    final descfile = File(_descfilepath);
+    if (descfile.existsSync()) {
+      loadDescFromFile();
     }
 
     final iconpath = path.join(targetPath.path, icondirname);
@@ -115,15 +135,32 @@ class DocumentModel extends ChangeNotifier {
     _dataManager.updateFromDirectory(targetPath);
   }
 
-  void loadJsonFromFile(filename) {
+  void loadInfoJsonFromFile() {
     var logger = SimpleLogger();
 
-    bool result = _dataManager.loadJsonFromFile(filename);
-    logger.info("$filename loaded : $result");
+    bool result = _dataManager.loadInfoJsonFromFile(_infofilepath);
+    logger.info("$_infofilepath loaded : $result");
   }
 
-  void writeJsonToFile(filename) {
-    _dataManager.writeJsonToFile(filename);
+  void loadDescFromFile() {
+    var logger = SimpleLogger();
+
+    bool result = _dataManager.loadDescFromJson(_descfilepath);
+    logger.info("$_descfilepath loaded : $result");
+  }
+
+  void writeInfoJsonToFile() async {
+    return await _lockInfofileSave.synchronized(
+        () => _dataManager.writeInfoJsonToFile(File(_infofilepath)));
+  }
+
+  void writeDescToFile() async {
+    if (_timerDescFileSave != null) _timerDescFileSave.cancel();
+
+    _timerDescFileSave = Timer(Duration(seconds: 10), () {
+      _lockDescfileSave.synchronized(
+          () => _dataManager.writeDescToJson(File(_descfilepath)));
+    });
   }
 
   InfoFile getSelectedFileInfo() {
@@ -197,7 +234,7 @@ class DocumentModel extends ChangeNotifier {
     logger.info("update and notify");
   }
 
-  bool isLock() {
-    return _dataManager.isLock();
+  bool isRebuildLock() {
+    return _dataManager.locked;
   }
 }

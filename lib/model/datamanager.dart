@@ -11,11 +11,9 @@ class DataManager {
 
   Map<String, InfoFolder> folders = {};
   Map<String, InfoFile> files = {};
+  bool locked = false;
 
-  bool _locked = false;
-  bool isLock() {
-    return _locked;
-  }
+  Map<String, InfoTags> desces = {};
 
   void updateFromDirectory(targetPath) {
     // 한 계층의 디렉토리만 검색한다.
@@ -87,7 +85,7 @@ class DataManager {
     });
   }
 
-  bool loadJsonFromFile(filename) {
+  bool loadInfoJsonFromFile(filename) {
     var f = File(filename);
     if (!f.existsSync()) return false;
 
@@ -113,15 +111,12 @@ class DataManager {
     }
 
     var lockobj = jsonobj['lock'];
-    if (lockobj == null)
-      _locked = false;
-    else
-      _locked = lockobj as bool;
+    locked = lockobj == null ? false : lockobj as bool;
 
     return true;
   }
 
-  bool writeJsonToFile(filename) {
+  Future<bool> writeInfoJsonToFile(File wf) async {
     List<dynamic> folderTable = [];
     for (var folder in folders.values) {
       folderTable.add(folder.toJson());
@@ -138,8 +133,8 @@ class DataManager {
       'lock': false
     };
 
-    var f = File(filename);
-    f.createSync();
+    await wf.create();
+
     String jsonText;
     if (kDebugMode) {
       JsonEncoder encoder = JsonEncoder.withIndent('  ');
@@ -148,12 +143,51 @@ class DataManager {
       jsonText = jsonEncode(root);
     }
 
-    f.writeAsStringSync(jsonText);
+    await wf.writeAsString(jsonText);
 
     var logger = SimpleLogger();
     logger.info(
-        "$filename saved (folder:${folderTable.length}, files:${fileTable.length}");
+        "$wf.path saved (folder:${folderTable.length}, files:${fileTable.length}");
 
     return true;
+  }
+
+  bool loadDescFromJson(filename) {
+    var f = File(filename);
+    if (!f.existsSync()) return false;
+
+    var text = f.readAsStringSync();
+    var jsonobj = jsonDecode(text);
+
+    desces = {};
+
+    var tagsobj = jsonobj['tags'];
+    tagsobj.forEach((k, v) {
+      var tags = InfoTags.fromJson(v);
+      if (tags.bookmark != 0) desces.putIfAbsent(k, () => tags);
+    });
+
+    return true;
+  }
+
+  void writeDescToJson(File wf) async {
+    await wf.create();
+
+    Map<String, dynamic> root = {
+      'tags': desces,
+    };
+
+    String jsonText;
+    if (kDebugMode) {
+      JsonEncoder encoder = JsonEncoder.withIndent('  ');
+      jsonText = encoder.convert(root);
+    } else {
+      jsonText = jsonEncode(root);
+    }
+
+    await wf.writeAsString(jsonText);
+
+    var logger = SimpleLogger();
+    logger.info("$wf.path saved");
   }
 }

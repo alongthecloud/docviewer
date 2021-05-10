@@ -63,7 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
       leading: const Icon(Icons.refresh),
       title: Text('Rebuild'),
       subtitle: Text('rebuild file information'),
-      onTap: model.isLock()
+      onTap: model.isRebuildLock()
           ? null
           : () {
               // set up the AlertDialog
@@ -138,6 +138,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
     var folderinfos = model.getFolders();
     var fileinfos = model.getFiles();
+    var tagsinfos = model.getTags();
+
     var listfiles = model.filteredfiles;
 
     return ListView.builder(
@@ -145,26 +147,36 @@ class _MyHomePageState extends State<MyHomePage> {
       itemCount: listfiles.length,
       itemBuilder: (context, index) {
         var filekey = listfiles[index];
-        InfoFile current = fileinfos[filekey];
-        String foldername = folderinfos.containsKey(current.folder)
-            ? folderinfos[current.folder].title
-            : current.folder;
+        InfoFile curFileinfo = fileinfos[filekey];
+        InfoTags curTagsinfo = tagsinfos[filekey];
 
-        return MyListTile(current.title, foldername,
-            header: model.icons[current.folder],
-            time: current.datetimeString,
-            desc: current.desc,
-            tags: '', onTap: () {
+        String foldername = folderinfos.containsKey(curFileinfo.folder)
+            ? folderinfos[curFileinfo.folder].title
+            : curFileinfo.folder;
+
+        String bookmark = " ";
+        if (curTagsinfo != null && curTagsinfo.bookmark != 0) {
+          bookmark = '⭐';
+        }
+
+        return MyListTile(curFileinfo.title, foldername,
+            header: model.icons[curFileinfo.folder],
+            time: curFileinfo.datetimeString,
+            desc: curFileinfo.desc,
+            tags: bookmark, onTap: () {
           model.selectedKey = filekey;
           Navigator.pushNamed(context, '/viewer');
         }, onLongPress: () {
-          logger.info("tile LongPress");
-          // if (current.tags.contains(1)) {
-          //   current.tags.remove(1);
-          // } else {
-          //   current.tags.add(1);
-          // }
-          // setState(() {});
+          curTagsinfo = tagsinfos.update(filekey, (value) {
+            value.bookmark = value.bookmark == 0 ? 1 : 0;
+            return value;
+          }, ifAbsent: () {
+            return InfoTags(1);
+          });
+
+          setState(() {
+            model.writeDescToFile();
+          });
         });
       },
     );
