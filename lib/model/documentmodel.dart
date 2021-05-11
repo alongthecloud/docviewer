@@ -36,7 +36,8 @@ class DocumentModel extends ChangeNotifier {
   DataManager _dataManager = DataManager();
   Map<String, Image> icons = {};
 
-  String selectedKey = "";
+  int selectedIndex = -1;
+
   Set<String> filters = Set<String>();
   List<String> filteredfiles = [];
 
@@ -164,10 +165,27 @@ class DocumentModel extends ChangeNotifier {
   }
 
   InfoFile getSelectedFileInfo() {
+    if (selectedIndex < 0 || selectedIndex >= filteredfiles.length) return null;
+    var filekey = filteredfiles[selectedIndex];
     var files = getFiles();
 
-    if (selectedKey == null || selectedKey.isEmpty) return null;
-    return files[selectedKey];
+    return files[filekey];
+  }
+
+  bool prevSelected() {
+    int nextIndex = selectedIndex - 1;
+    if (nextIndex < 0) return false;
+
+    selectedIndex = nextIndex;
+    return true;
+  }
+
+  bool nextSelected() {
+    int nextIndex = selectedIndex + 1;
+    if (nextIndex >= filteredfiles.length) return false;
+
+    selectedIndex = nextIndex;
+    return true;
   }
 
   void updateFilterList(List<String> newfilters) {

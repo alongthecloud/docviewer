@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_settings/models/settings_list_item.dart';
+import 'package:flutter_settings/util/SettingsConstants.dart';
+import 'package:flutter_settings/widgets/SettingsCheckBox.dart';
 import 'package:flutter_settings/widgets/SettingsInputField.dart';
 import 'package:flutter_settings/widgets/SettingsSection.dart';
 import 'package:flutter_settings/widgets/SettingsSelectionList.dart';
@@ -7,8 +9,21 @@ import 'package:flutter_settings/widgets/SettingsSelectionList.dart';
 import 'package:provider/provider.dart';
 import 'model/appconfigmodel.dart';
 
-class SettingsView extends StatelessWidget {
+class SettingsView extends StatefulWidget {
+  @override
+  _SettingsViewState createState() => _SettingsViewState();
+}
+
+class _SettingsViewState extends State<SettingsView> {
   List<SettingsSelectionItem<int>> fontItemList = [];
+
+  @override
+  void deactivate() {
+    super.deactivate();
+
+    var appconfigmodel = Provider.of<AppConfigModel>(context, listen: false);
+    appconfigmodel.saveSettings();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +67,15 @@ class SettingsView extends StatelessWidget {
                   caption: appconfigmodel.fontName,
                   onSelect: (value, index) {
                     appconfigmodel.fontIndex = index;
-                  })
+                  }),
+              SettingsCheckBox(
+                title: 'Hide bottom navigation',
+                onPressed: (bool value) {
+                  appconfigmodel.hideBottomNaviBar = value;
+                },
+                value: appconfigmodel.hideBottomNaviBar,
+                type: CheckBoxWidgetType.Switch,
+              ),
             ],
           )
         ],

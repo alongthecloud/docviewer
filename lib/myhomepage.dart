@@ -164,7 +164,7 @@ class _MyHomePageState extends State<MyHomePage> {
             time: curFileinfo.datetimeString,
             desc: curFileinfo.desc,
             tags: bookmark, onTap: () {
-          model.selectedKey = filekey;
+          model.selectedIndex = index;
           Navigator.pushNamed(context, '/viewer');
         }, onLongPress: () {
           curTagsinfo = tagsinfos.update(filekey, (value) {
