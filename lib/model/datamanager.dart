@@ -12,6 +12,7 @@ class DataManager {
   Map<String, InfoFolder> folders = {};
   Map<String, InfoFile> files = {};
   bool locked = false;
+  int allFilesCount = 0;
 
   Map<String, InfoTags> desces = {};
 
@@ -25,6 +26,7 @@ class DataManager {
     for (var dir in subDir) {
       if (dir is! Directory) continue;
       var folderBasename = path.basename(dir.path);
+      // . 과 _로 시작되는 것은 거른다.
       if (folderBasename.startsWith(".") || folderBasename.startsWith("_"))
         continue;
 
@@ -46,6 +48,7 @@ class DataManager {
     });
 
     Set<String> fileset = Set<String>();
+    allFilesCount = 0;
 
     for (var dir in dirlist) {
       var subfiles = dir.listSync(recursive: false);
@@ -56,7 +59,7 @@ class DataManager {
         var filename = path.basename(filepath);
         var ext = path.extension(filepath);
 
-        // 확장자 필터, html과 txt 만 지원
+        // extset 에 정의된 확장자만 사용
         if (extset.contains(ext)) {
           File f = File(filepath);
           FileStat fs = f.statSync();
@@ -75,6 +78,11 @@ class DataManager {
           });
 
           fileset.add(filekey);
+
+          assert(folders.containsKey(folderBasename) == true);
+          var folder = folders[folderBasename];
+          folder.count++;
+          allFilesCount++;
         }
       }
     }
@@ -104,10 +112,18 @@ class DataManager {
       folders.putIfAbsent(folderBasename, () => folder);
     }
 
+    allFilesCount = 0;
     var filesobj = jsonobj['files'];
     for (var obj in filesobj) {
       var fileinfo = InfoFile.fromJson(obj);
       files.putIfAbsent(fileinfo.getkey(), () => fileinfo);
+
+      var folderBasename = fileinfo.folder;
+
+      assert(folders.containsKey(folderBasename) == true);
+      var folder = folders[folderBasename];
+      folder.count++;
+      allFilesCount++;
     }
 
     var lockobj = jsonobj['lock'];

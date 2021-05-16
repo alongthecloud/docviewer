@@ -32,9 +32,22 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget _folderListView(context, DocumentModel model) {
-    var folderinfos = model.getFolders();
+    // Custom Text Widget function
+    const TextStyle widgetTextStyle = TextStyle(fontSize: 16);
+    Widget Function(String text, int count) customTextWidget =
+        (String text, int count) {
+      //return Text(text, style: TextStyle(fontSize: 16));
+      return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Text(text, style: widgetTextStyle),
+            Text(count.toString(), style: widgetTextStyle)
+          ]);
+    };
 
+    var folderinfos = model.getFolders();
     final filterindices = model.filters;
+
     List<Widget> groupWidget = [];
 
     Color selectedColor = Colors.grey[300];
@@ -43,22 +56,25 @@ class _MyHomePageState extends State<MyHomePage> {
     for (InfoFolder info in folderinfos.values) {
       var leadicon =
           model.icons.containsKey(info.path) ? model.icons[info.path] : null;
-      groupWidget.add(ListTile(
-          leading: Container(
-              width: 32, height: 32, child: ClipOval(child: leadicon)),
-          title: Text(info.title),
-          onTap: () {
-            model.updateFilterList([info.path]);
-            model.updateModel();
-            Navigator.pop(context);
-          },
-          selected:
-              filterindices.length != 0 && filterindices.contains(info.path),
-          selectedTileColor: selectedColor));
+      groupWidget.add(Container(
+          padding: EdgeInsets.all(2),
+          child: ListTile(
+              leading: Container(
+                  width: 40, height: 40, child: ClipOval(child: leadicon)),
+              title: customTextWidget(info.title, info.count),
+              onTap: () {
+                model.updateFilterList([info.path]);
+                model.updateModel();
+                Navigator.pop(context);
+              },
+              selected: filterindices.length != 0 &&
+                  filterindices.contains(info.path),
+              selectedTileColor: selectedColor)));
     }
 
     // additional  widgets
     List<Widget> appendWidget = [];
+    appendWidget.add(SizedBox(height: 10));
     appendWidget.add(ListTile(
       leading: const Icon(Icons.refresh),
       title: Text('Rebuild'),
@@ -114,9 +130,11 @@ class _MyHomePageState extends State<MyHomePage> {
       },
     ));
 
+    int allFilesCount = model.getAllFilesCount();
+
     return ListView(children: [
       ListTile(
-        title: Text('All'),
+        title: customTextWidget('All', allFilesCount),
         onTap: () {
           model.updateFilterList(null);
           model.updateModel();

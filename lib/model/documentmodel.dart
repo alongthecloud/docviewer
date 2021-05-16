@@ -60,6 +60,10 @@ class DocumentModel extends ChangeNotifier {
     return _dataManager.desces;
   }
 
+  int getAllFilesCount() {
+    return _dataManager.allFilesCount;
+  }
+
   Future<Directory> _getTargetPath() async {
     Directory targetDirectory;
     String subdirname = appconfigmodel.targetPath;
@@ -123,7 +127,7 @@ class DocumentModel extends ChangeNotifier {
 
     updateFilterList(null);
     updateModel();
-  }
+  } // UpdateInfo
 
   Image loadImageFromPath(imagepath) {
     var f = File(imagepath);

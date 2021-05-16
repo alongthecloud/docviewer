@@ -41,18 +41,17 @@ class MyListTile extends StatelessWidget {
         onLongPress?.call();
       },
       child: Container(
-          padding: EdgeInsets.fromLTRB(9.0, 3.0, 6.0, 3.0),
+          padding: EdgeInsets.fromLTRB(9.0, 5.0, 9.0, 5.0),
           child: Row(children: [
             Container(
-                padding: EdgeInsets.all(1),
-                width: 42,
-                height: 42,
+                width: 50,
+                height: 50,
                 child: ClipOval(
                   child: header,
                 )),
             Expanded(
                 child: Container(
-                    padding: EdgeInsets.fromLTRB(6.0, 3.0, 9.0, 3.0),
+                    padding: EdgeInsets.fromLTRB(9.0, 6.0, 9.0, 6.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -62,30 +61,32 @@ class MyListTile extends StatelessWidget {
                           children: [
                             Container(
                                 child: Text(parent,
-                                    style: TextStyle(fontSize: 13.0))),
+                                    style: TextStyle(fontSize: 16.0))),
                             SizedBox(
                                 child: Text(time,
                                     maxLines: 1,
                                     style: TextStyle(
-                                        fontSize: 12.0,
+                                        fontSize: 14.0,
                                         fontWeight: FontWeight.normal,
                                         color: Colors.grey[600]))),
                           ],
                         ),
                         Container(
-                            padding: EdgeInsets.only(right: 16.0),
+                            padding: EdgeInsets.only(right: 3.0, top: 5.0),
                             child: Text(title,
                                 maxLines: 1,
                                 style: TextStyle(
-                                    fontSize: 14.0,
+                                    fontSize: 16.0,
                                     fontWeight: FontWeight.bold),
                                 overflow: TextOverflow.clip)),
                         Container(
+                            padding: EdgeInsets.only(right: 3.0, top: 3.0),
                             child: Text(desc,
                                 maxLines: 1,
                                 style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.normal),
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.normal,
+                                    color: Colors.grey),
                                 overflow: TextOverflow.clip))
                       ],
                     ))),

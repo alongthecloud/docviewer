@@ -72,8 +72,11 @@ class InfoFile implements InfoBase {
 }
 
 class InfoFolder implements InfoBase {
+  // serialized
   String path;
   String title;
+  // non-serialized
+  int count = 0;
 
   InfoFolder(this.path, this.title);
 
