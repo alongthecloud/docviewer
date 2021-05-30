@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:docviewer/model/information.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
@@ -85,12 +86,13 @@ class _DocumentViewState extends State<DocumentView> {
   }
 
   void updateTargetPath(DocumentModel model) {
-    var fileInfo = model.getSelectedFileInfo();
+    var folders = model.getFolders();
+    InfoFile fileInfo = model.getSelectedFileInfo();
     Directory targetPath = model.targetPath;
     if (fileInfo != null) {
-      _targetPath =
-          path.join(targetPath.path, fileInfo.folder, fileInfo.filename);
-      _title = fileInfo.title;
+      _targetPath = path.join(
+          targetPath.path, fileInfo.filename); // fileInfo.folder, 를 제거.
+      _title = "${folders[fileInfo.folder].title} : ${fileInfo.title} ";
     }
   }
 
@@ -108,7 +110,7 @@ class _DocumentViewState extends State<DocumentView> {
     return WebviewScaffold(
       url: Uri.file(_targetPath).toString(),
       appBar: NewGradientAppBar(
-        title: Text(_title),
+        title: Text(_title, style: TextStyle(fontSize: 22)),
         gradient: LinearGradient(colors: [Colors.lightBlue, Colors.purple]),
       ),
       bottomNavigationBar: _bottomButtons,

@@ -29,6 +29,7 @@ class _InitViewState extends State<InitView> {
     // 경로 설정이 완료되면 0.3 초를 기다린뒤 Home 으로 이동한다.
     documentPathComplete.future.then((value) {
       appconfigmodel.targetPath = value;
+      appconfigmodel.saveSettings();
       documentmodel.updateInfo(false);
       Future.delayed(Duration(milliseconds: 200), () => Navigator.pop(context));
     });

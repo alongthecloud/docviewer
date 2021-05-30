@@ -1,3 +1,4 @@
+import 'package:docviewer/model/documentmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_settings/models/settings_list_item.dart';
 import 'package:flutter_settings/util/SettingsConstants.dart';
@@ -27,7 +28,8 @@ class _SettingsViewState extends State<SettingsView> {
 
   @override
   Widget build(BuildContext context) {
-    var appconfigmodel = Provider.of<AppConfigModel>(context, listen: false);
+    var documentmodel = Provider.of<DocumentModel>(context, listen: false);
+    var appconfigmodel = documentmodel.appconfigmodel;
 
     if (fontItemList.length == 0) {
       int itemIndex = 0;
@@ -50,6 +52,7 @@ class _SettingsViewState extends State<SettingsView> {
                 var text = value.toString();
                 if (text != null && text.isNotEmpty) {
                   appconfigmodel.targetPath = text;
+                  documentmodel.updateInfo(false);
                 }
               },
               context: context,

@@ -64,8 +64,9 @@ class DataManager {
           File f = File(filepath);
           FileStat fs = f.statSync();
           DateTime mdtime = fs.modified;
-          var fileinfo =
-              InfoFile(folderBasename, filename, filename, datetime: mdtime);
+          var fileinfo = InfoFile(
+              folderBasename, path.join(folderBasename, filename), filename,
+              datetime: mdtime);
 
           var filekey = fileinfo.getkey();
           files.update(filekey, (beforeFileinfo) {
